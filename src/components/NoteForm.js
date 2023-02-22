@@ -1,9 +1,17 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, Button } from 'react-native';
 
-const BlogPostForm = ({ onSubmit, initialValues }) => {
+import {
+  Button,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
+
+const NoteForm = ({ errorMessage, onSubmit, initialValues }) => {
   const [title, setTitle] = useState(initialValues.title);
   const [content, setContent] = useState(initialValues.content);
+
 
   return (
     <View>
@@ -19,12 +27,19 @@ const BlogPostForm = ({ onSubmit, initialValues }) => {
         value={content}
         onChangeText={(text) => setContent(text)}
       />
-      <Button title='Save Blog Post' onPress={() => onSubmit(title, content)} />
+      {errorMessage && (
+        <View style={styles.errorContainer}>
+          {errorMessage.map(error => {
+            return <Text style={styles.errorMessage}>{error}</Text>;
+          })}
+        </View>
+      )}
+      <Button title='Save Note' onPress={() => onSubmit(title, content)} />
     </View>
   );
 };
 
-BlogPostForm.defaultProps = {
+NoteForm.defaultProps = {
   initialValues: {
     title: '',
     content: '',
@@ -45,6 +60,16 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     marginLeft: 5,
   },
+  errorContainer: {
+    marginVertical: 10
+  },
+  errorMessage: {
+    fontSize: 16,
+    color: 'red',
+    marginLeft: 15,
+    marginTop: 15,
+    textAlign: 'center'
+  }
 });
 
-export default BlogPostForm;
+export default NoteForm;

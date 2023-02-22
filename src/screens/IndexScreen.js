@@ -1,23 +1,28 @@
-import React, { useContext, useEffect } from 'react';
+import React, {
+  useContext,
+  useEffect,
+} from 'react';
+
 import {
-  View,
-  Text,
-  StyleSheet,
   FlatList,
-  Button,
+  StyleSheet,
+  Text,
   TouchableOpacity,
+  View,
 } from 'react-native';
-import { Context } from '../context/BlogContext';
+
 import { Feather } from '@expo/vector-icons';
 
+import { Context } from '../context/NoteContext';
+
 const IndexScreen = ({ navigation }) => {
-  const { state, deleteBlogPost, getBlogPosts } = useContext(Context);
+  const { state, deleteNote, getNotes } = useContext(Context);
 
   useEffect(() => {
-    getBlogPosts();
+    getNotes();
 
     const listener = navigation.addListener('didFocus', () => {
-      getBlogPosts();
+      getNotes();
     });
 
     return () => {
@@ -29,7 +34,7 @@ const IndexScreen = ({ navigation }) => {
     <View>
       <FlatList
         data={state}
-        keyExtractor={(blogPost) => blogPost.title}
+        keyExtractor={(note) => note.title}
         renderItem={({ item }) => {
           return (
             <TouchableOpacity
@@ -37,9 +42,9 @@ const IndexScreen = ({ navigation }) => {
             >
               <View style={styles.row}>
                 <Text style={styles.title}>
-                  {item.title} - {item.id}
+                  {item.title} - {item.content}
                 </Text>
-                <TouchableOpacity onPress={() => deleteBlogPost(item.id)}>
+                <TouchableOpacity style={styles.actionIcon} onPress={() => deleteNote(item.id)}>
                   <Feather style={styles.icon} name='trash' />
                 </TouchableOpacity>
               </View>
@@ -54,7 +59,7 @@ const IndexScreen = ({ navigation }) => {
 IndexScreen.navigationOptions = ({ navigation }) => {
   return {
     headerRight: () => (
-      <TouchableOpacity onPress={() => navigation.navigate('Create')}>
+      <TouchableOpacity style={styles.actionIcon} onPress={() => navigation.navigate('Create')}>
         <Feather name='plus' size={30} />
       </TouchableOpacity>
     ),
@@ -76,6 +81,9 @@ const styles = StyleSheet.create({
   icon: {
     fontSize: 24,
   },
+  actionIcon: {
+    marginRight: 30
+  }
 });
 
 export default IndexScreen;
